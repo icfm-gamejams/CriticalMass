@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://opg86hm654ek"]
+
+[ext_resource type="Script" path="res://mob.gd" id="1_kg3mr"]
+[ext_resource type="PackedScene" uid="uid://dm0iy4xmc1ge3" path="res://fragment.tscn" id="2_lti1y"]
+[ext_resource type="Texture2D" uid="uid://c6ffl2fisu7d1" path="res://art/Enemy.png" id="2_t2g1b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2alqs"]
+radius = 32.1403
+
+[node name="Mob" type="Area2D" groups=["mobs"]]
+script = ExtResource("1_kg3mr")
+fragment_scene = ExtResource("2_lti1y")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_t2g1b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2alqs")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

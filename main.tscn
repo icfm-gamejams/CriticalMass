@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3 uid="uid://f1w0d1t5mj88"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_1r2pm"]
+[ext_resource type="PackedScene" uid="uid://opg86hm654ek" path="res://mob.tscn" id="2_4b5kc"]
+[ext_resource type="PackedScene" uid="uid://bvfd38v8i4pat" path="res://player.tscn" id="2_acc4n"]
+[ext_resource type="Texture2D" uid="uid://ccxoawimdi6eq" path="res://art/background.png" id="3_uh45e"]
+[ext_resource type="Texture2D" uid="uid://dmk30wvdxfec3" path="res://art/Border.png" id="5_7ycai"]
+[ext_resource type="AudioStream" uid="uid://clgd3jot5uahe" path="res://sounds/723909__kevp888__2024-02-16_background-sound_game-music_remix.wav" id="6_o3epi"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_1r2pm")
+mob_scene = ExtResource("2_4b5kc")
+
+[node name="Background" type="TextureRect" parent="."]
+texture_repeat = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -45000.0
+offset_top = -45000.0
+offset_right = 54200.0
+offset_bottom = 54400.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_uh45e")
+stretch_mode = 1
+
+[node name="Player" parent="." instance=ExtResource("2_acc4n")]
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="."]
+
+[node name="MobContainer" type="Node" parent="."]
+
+[node name="FragmentContainer" type="Node" parent="."]
+
+[node name="Border" type="TextureRect" parent="."]
+texture_repeat = 2
+offset_left = -25000.0
+offset_top = -25000.0
+offset_right = 25000.0
+offset_bottom = 25000.0
+texture = ExtResource("5_7ycai")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_o3epi")
+autoplay = true
+
+[connection signal="critical_mass_achieved" from="Player" to="." method="_on_player_critical_mass_achieved"]
+[connection signal="player_consumed" from="Player" to="." method="game_over"]
+[connection signal="start_game" from="Player" to="." method="new_game"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
+[connection signal="finished" from="BackgroundMusic" to="." method="_on_background_music_finished"]

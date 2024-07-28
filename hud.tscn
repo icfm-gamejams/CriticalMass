@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://cf6fw366qff6k"]
+
+[ext_resource type="Script" path="res://hud.gd" id="1_towma"]
+[ext_resource type="FontFile" uid="uid://bpyg5d817ylxg" path="res://fonts/IBMPlexMono-Medium.ttf" id="2_rcei8"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_towma")
+
+[node name="ScoreLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 84.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_rcei8")
+theme_override_font_sizes/font_size = 64
+text = "0"
+
+[node name="Message" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -42.0
+offset_right = 20.0
+offset_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_rcei8")
+theme_override_font_sizes/font_size = 64
+
+[node name="StartButton" type="Button" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -99.0
+offset_top = -200.0
+offset_right = 99.0
+offset_bottom = -108.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_rcei8")
+theme_override_font_sizes/font_size = 64
+text = "START"
+
+[node name="MessageTimer" type="Timer" parent="."]
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]
