@@ -2,10 +2,10 @@ extends Area2D
 
 var size = 0
 
-var acceleration = Vector2.ZERO
-var velocity = Vector2.ZERO
-var max_velocity = 400
-var target : Node
+var acceleration: Vector2 = Vector2.ZERO
+var velocity: Vector2 = Vector2.ZERO
+var max_velocity: float = 400
+var target: Node
 
 func _ready():
 	$Sprite2D.scale = Vector2(size, size)
@@ -26,11 +26,12 @@ func _process(delta):
 	position += velocity * delta
 	rotate(deg_to_rad(50 * delta))
 
-
 func _on_area_entered(area):
-	if area.is_in_group("mobs") or area.is_in_group("player"):
+	if area.is_in_group("consumers"):
 		queue_free()
-
 
 func _on_collision_timer_timeout():
 	$CollisionShape2D.set_deferred("disabled", false)
+
+func _on_sprite_2d_draw():
+	$Sprite2D.material.set_shader_parameter("aura_color", Vector4(0.0, 1.0, 0.0, 1.0))

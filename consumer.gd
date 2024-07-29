@@ -1,11 +1,13 @@
 extends Area2D
 
+signal critical_mass_achieved
+
 @export var fragment_scene: PackedScene
 var main_scene: Node
-var consumer_size = 0
-var consumer_max_size = 0;
-var growth_rate = 0.5
-var critical_mass = 20
+var consumer_size: float = 0
+var consumer_max_size: float = 0;
+var growth_rate: float = 0.5
+var critical_mass: float = 10
 
 func _ready():
 	consumer_max_size = randf() + 0.5
@@ -14,15 +16,6 @@ func _ready():
 	$CollisionShape2D.scale = Vector2(consumer_size, consumer_size)
 
 func _process(delta):
-	pass
-	#var asteroids = main_scene.get_node("MobContainer").get_children()
-	#asteroids.push_back(main_scene.get_node("Player"))
-	#for mob in asteroids:
-		#if mob != self:
-			#var f = (10 * consumer_size * mob.consumer_size) / position.distance_squared_to(mob.position)
-			#mob.velocity += f * delta * (position - mob.position).normalized()
-
-func grow(delta):
 	if consumer_size < consumer_max_size:
 		consumer_size += growth_rate * delta
 		$Sprite2D.scale = Vector2(consumer_size, consumer_size)
@@ -30,8 +23,8 @@ func grow(delta):
 
 func consume(area):
 	var consumed = false
-	if area.is_in_group("mobs") or area.is_in_group("player"):
-		if area.consumer_size > consumer_size:
+	if area.is_in_group("consumers"):
+		if not self.is_in_group("critical_mass") and (area.consumer_size > consumer_size or area.is_in_group("critical_mass")):
 			consumed = true
 			var direction_vector : Vector2 = (position - area.position).normalized()
 			var offset = 45
@@ -45,5 +38,7 @@ func consume(area):
 				main_scene.add_child(fragment)
 	elif area.is_in_group("fragments"):
 		consumer_max_size += area.size / 4
+		if consumer_max_size >= critical_mass:
+			critical_mass_achieved.emit(self)
 	
 	return consumed

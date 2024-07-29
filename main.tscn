@@ -49,9 +49,8 @@ texture = ExtResource("5_7ycai")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_o3epi")
-autoplay = true
 
-[connection signal="critical_mass_achieved" from="Player" to="." method="_on_player_critical_mass_achieved"]
+[connection signal="critical_mass_achieved" from="Player" to="." method="_on_critical_mass_achieved"]
 [connection signal="player_consumed" from="Player" to="." method="game_over"]
 [connection signal="start_game" from="Player" to="." method="new_game"]
 [connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]

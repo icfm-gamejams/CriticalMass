@@ -1,21 +1,28 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvfd38v8i4pat"]
+[gd_scene load_steps=9 format=3 uid="uid://bvfd38v8i4pat"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_4o1mm"]
 [ext_resource type="PackedScene" uid="uid://dm0iy4xmc1ge3" path="res://fragment.tscn" id="2_eusel"]
-[ext_resource type="Texture2D" uid="uid://kqexmqro8iyo" path="res://art/Player.png" id="2_qlhqa"]
 [ext_resource type="PackedScene" uid="uid://cf6fw366qff6k" path="res://hud.tscn" id="3_2sxyx"]
+[ext_resource type="Shader" path="res://asteroid.gdshader" id="3_dati2"]
+[ext_resource type="Texture2D" uid="uid://c6ffl2fisu7d1" path="res://art/Asteroid.png" id="4_jtqno"]
 [ext_resource type="AudioStream" uid="uid://c57bwlnthq6w8" path="res://sounds/explosion.wav" id="5_v23vh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5ybcf"]
+shader = ExtResource("3_dati2")
+shader_parameter/aura_color = Vector4(0.5, 0.5, 0.5, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_33agt"]
 radius = 32.0
 
-[node name="Player" type="Area2D" groups=["player"]]
+[node name="Player" type="Area2D" groups=["consumers"]]
 script = ExtResource("1_4o1mm")
 fragment_scene = ExtResource("2_eusel")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_qlhqa")
+texture_filter = 1
+material = SubResource("ShaderMaterial_5ybcf")
+texture = ExtResource("4_jtqno")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_33agt")
@@ -28,4 +35,6 @@ shape = SubResource("CircleShape2D_33agt")
 stream = ExtResource("5_v23vh")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="draw" from="." to="." method="_on_draw"]
+[connection signal="draw" from="Sprite2D" to="." method="_on_sprite_2d_draw"]
 [connection signal="start_game" from="HUD" to="." method="_on_hud_start_game"]

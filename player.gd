@@ -2,13 +2,14 @@ extends "consumer.gd"
 
 signal player_consumed
 signal start_game
-signal critical_mass_achieved
 
-@export var speed = 200
-@export var max_velocity = 400
-var velocity  = Vector2.ZERO
-var border = 10432
-var dead = false
+@export var speed: float = 200
+@export var max_velocity: float = 400
+var velocity: Vector2  = Vector2.ZERO
+var border: float = 10432
+
+var input_available: bool = false
+var motion_available: bool = false
 
 func reset_size():
 	consumer_max_size = 1
@@ -17,23 +18,22 @@ func reset_size():
 	$CollisionShape2D.scale = Vector2(consumer_size, consumer_size)
 
 func _ready():
-	reset_size()
 	hide()
-	$Camera2D.zoom.x = 1/consumer_size
-	$Camera2D.zoom.y = 1/consumer_size
+	reset_size()
+	$Camera2D.zoom.x = 1 / consumer_size
+	$Camera2D.zoom.y = 1 / consumer_size
 
 func _process(delta):
 	super(delta)
-	if !dead:
-		# update size 
-		grow(delta)
-		
-		# update camera zoom based on size
-		$Camera2D.zoom.x = 1/consumer_size
-		$Camera2D.zoom.y = 1/consumer_size
-		
+	
+	# update camera zoom based on size
+	$Camera2D.zoom.x = 1 / consumer_size
+	$Camera2D.zoom.y = 1 / consumer_size
+	
+	var acceleration : Vector2 = Vector2.ZERO
+	
+	if input_available:
 		# get input and apply to acceleration
-		var acceleration = Vector2.ZERO
 		if(Input.is_action_pressed("move_right")):
 			acceleration.x += 1
 		if(Input.is_action_pressed("move_left")):
@@ -46,11 +46,8 @@ func _process(delta):
 		# apply speed to acceleration normal vector
 		if acceleration.length() > 0:
 			acceleration = acceleration.normalized() * speed
-			
-		# clamp acceleration
-		acceleration.x = clamp(acceleration.x, -500, 500)
-		acceleration.y = clamp(acceleration.y, -500, 500)
-		
+	
+	if motion_available:
 		# update velocity 
 		velocity += acceleration * delta
 		
@@ -73,21 +70,23 @@ func start(pos):
 	show()
 	reset_size()
 	velocity = Vector2.ZERO
-	dead = false
 	$CollisionShape2D.disabled = false
+	input_available = true
+	motion_available = true
 
 func _on_area_entered(area):
-	$Explosion.play()
-	var consumed = consume(area)
+	if get_tree().get_nodes_in_group("critical_mass").is_empty():
+		$Explosion.play()
+	var consumed: bool = consume(area)
 	if consumed:
-		reset_size()
 		hide()
-		dead = true
 		player_consumed.emit()
-		velocity = Vector2.ZERO
 		$CollisionShape2D.set_deferred("disabled", true)
-	elif consumer_max_size > critical_mass:
-		critical_mass_achieved.emit(self)
+		input_available = false
+		motion_available = false
 
 func _on_hud_start_game():
 	start_game.emit()
+
+func _on_draw():
+	$Sprite2D.material.set_shader_parameter("aura_color", Vector4(0.0, 0.0, 1.0, 1.0))

@@ -1,21 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://opg86hm654ek"]
+[gd_scene load_steps=7 format=3 uid="uid://opg86hm654ek"]
 
 [ext_resource type="Script" path="res://mob.gd" id="1_kg3mr"]
 [ext_resource type="PackedScene" uid="uid://dm0iy4xmc1ge3" path="res://fragment.tscn" id="2_lti1y"]
-[ext_resource type="Texture2D" uid="uid://c6ffl2fisu7d1" path="res://art/Enemy.png" id="2_t2g1b"]
+[ext_resource type="Shader" path="res://asteroid.gdshader" id="3_2bc4q"]
+[ext_resource type="Texture2D" uid="uid://c6ffl2fisu7d1" path="res://art/Asteroid.png" id="3_sa3rn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k5gfr"]
+shader = ExtResource("3_2bc4q")
+shader_parameter/aura_color = Vector4(0.5, 0.5, 0.5, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2alqs"]
 radius = 32.1403
 
-[node name="Mob" type="Area2D" groups=["mobs"]]
+[node name="Mob" type="Area2D" groups=["consumers", "mobs"]]
 script = ExtResource("1_kg3mr")
 fragment_scene = ExtResource("2_lti1y")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_t2g1b")
+texture_filter = 1
+material = SubResource("ShaderMaterial_k5gfr")
+texture = ExtResource("3_sa3rn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_2alqs")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="draw" from="Sprite2D" to="." method="_on_sprite_2d_draw"]
