@@ -1,11 +1,11 @@
 extends "consumer.gd"
 
-var velocity: Vector2 = Vector2.ZERO
-
 func _process(delta):
+	if input_available and position.distance_to(Vector2.ZERO) > border:
+		var direction: Vector2 = position.direction_to(Vector2.ZERO)
+		velocity += direction.normalized() * delta * 200
+		
 	super(delta)
-	rotate(deg_to_rad(10 * delta))
-	position += velocity * delta
 
 func _on_area_entered(area):
 	var consumed = consume(area)

@@ -5,11 +5,6 @@ signal start_game
 
 @export var speed: float = 200
 @export var max_velocity: float = 400
-var velocity: Vector2  = Vector2.ZERO
-var border: float = 10432
-
-var input_available: bool = false
-var motion_available: bool = false
 
 func reset_size():
 	consumer_max_size = 1
@@ -23,14 +18,12 @@ func _ready():
 	$Camera2D.zoom.x = 1 / consumer_size
 	$Camera2D.zoom.y = 1 / consumer_size
 
-func _process(delta):
-	super(delta)
-	
+func _process(delta):	
 	# update camera zoom based on size
 	$Camera2D.zoom.x = 1 / consumer_size
 	$Camera2D.zoom.y = 1 / consumer_size
 	
-	var acceleration : Vector2 = Vector2.ZERO
+	acceleration = Vector2.ZERO
 	
 	if input_available:
 		# get input and apply to acceleration
@@ -47,23 +40,14 @@ func _process(delta):
 		if acceleration.length() > 0:
 			acceleration = acceleration.normalized() * speed
 	
-	if motion_available:
-		# update velocity 
-		velocity += acceleration * delta
-		
-		# clamp velocity
-		velocity.x = clamp(velocity.x, -max_velocity, max_velocity)
-		velocity.y = clamp(velocity.y, -max_velocity, max_velocity)
-		
-		# update position
-		position += velocity * delta
-		
-		# clamp position
-		var distance = position.distance_to(Vector2.ZERO)
-		if distance > border:
-			position = (position - Vector2.ZERO).normalized() * border
-		
-		rotate(deg_to_rad(10 * delta))
+	super(delta)
+	
+	# clamp position
+	var distance = position.distance_to(Vector2.ZERO)
+	if distance > border:
+		position = (position - Vector2.ZERO).normalized() * border
+	
+	rotate(deg_to_rad(10 * delta))
 
 func start(pos):
 	position = pos

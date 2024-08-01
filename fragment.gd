@@ -24,7 +24,7 @@ func _process(delta):
 	velocity.x = clamp(velocity.x, -max_velocity, max_velocity)
 	velocity.y = clamp(velocity.y, -max_velocity, max_velocity)
 	position += velocity * delta
-	rotate(deg_to_rad(50 * delta))
+	rotate(deg_to_rad(50 * delta * (1 / size)))
 
 func _on_area_entered(area):
 	if area.is_in_group("consumers"):

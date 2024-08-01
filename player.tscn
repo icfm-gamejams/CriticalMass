@@ -16,6 +16,8 @@ radius = 32.0
 
 [node name="Player" type="Area2D" groups=["consumers"]]
 script = ExtResource("1_4o1mm")
+speed = null
+max_velocity = null
 fragment_scene = ExtResource("2_eusel")
 metadata/_edit_group_ = true
 

@@ -7,7 +7,12 @@ var main_scene: Node
 var consumer_size: float = 0
 var consumer_max_size: float = 0;
 var growth_rate: float = 0.5
-var critical_mass: float = 10
+var critical_mass: float = 5
+var acceleration: Vector2 = Vector2.ZERO
+var velocity: Vector2 = Vector2.ZERO
+var border: float = 10432
+var input_available: bool = true
+var motion_available: bool = true
 
 func _ready():
 	consumer_max_size = randf() + 0.5
@@ -16,6 +21,12 @@ func _ready():
 	$CollisionShape2D.scale = Vector2(consumer_size, consumer_size)
 
 func _process(delta):
+	if motion_available:
+		velocity += acceleration * delta
+		position += velocity * delta
+	
+	rotate(deg_to_rad(50 * delta * (1 / consumer_size)))
+	
 	if consumer_size < consumer_max_size:
 		consumer_size += growth_rate * delta
 		$Sprite2D.scale = Vector2(consumer_size, consumer_size)

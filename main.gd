@@ -37,8 +37,11 @@ func new_game():
 		var velocity = Vector2(randf_range(50.0, 100.0), 0.0)
 		mob.velocity = velocity.rotated(direction)
 		
+		mob.connect("critical_mass_achieved", _on_critical_mass_achieved)
+		
 		$MobContainer.add_child(mob)
 		mob.main_scene = self
+		
 
 func _on_start_timer_timeout():
 	$ScoreTimer.start()
@@ -48,21 +51,11 @@ func _on_score_timer_timeout():
 
 func _process(delta):
 	if winner != null:
-		if $Player != winner:
-			var direction = (winner.position - $Player.position).normalized()
-			$Player.velocity += direction * 1000 * delta
-			$Player.position += $Player.velocity * delta
-			
-		for mob in $MobContainer.get_children():
-			if mob != winner:
-				var direction = (winner.position - mob.position).normalized()
-				mob.velocity += direction * 1000 * delta
-				
-		for fragment in $FragmentContainer.get_children():
-			fragment.acceleration = Vector2.ZERO
-			var direction = (winner.position - fragment.position).normalized()
-			fragment.velocity += direction * 1000 * delta
-
+		for node in get_tree().get_nodes_in_group("consumers"):
+			if node != winner:
+				var direction = (winner.position - node.position).normalized()
+				node.velocity += direction * 1000 * delta
+	
 
 func _on_background_music_finished():
 	$BackgroundMusic.play()
@@ -73,5 +66,5 @@ func _on_critical_mass_achieved(consumer):
 		winner.add_to_group("critical_mass")
 		game_over()
 		$Player.input_available = false
-		if $Player == winner:
-			$Player.motion_available = false
+		winner.input_available = false
+		winner.motion_available = false
